@@ -1,6 +1,7 @@
 import cv2
 import RPi.GPIO as GPIO
 import time
+import os
 
 # Define GPIO pin for the button
 BUTTON_PIN = 21
@@ -12,13 +13,9 @@ GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # Define the directory to save images
 SAVE_DIR = '~/rpi_axel/images'  # Change this to your desired directory
 
-# Initialize the camera
-camera = cv2.VideoCapture(0)
-if not camera.isOpened():
-    print("Error: Could not open camera.")
-    exit()
 
-def capture_image():
+
+def capture_image(camera):
     # Capture frame-by-frame
     ret, frame = camera.read()
     if not ret:
@@ -33,22 +30,33 @@ def capture_image():
     cv2.imwrite(image_path, frame)
     print(f"Image saved to {image_path}")
 
-try:
-    print("Press the button to capture an image...")
-    while True:
-        # Wait for the button press
-        button_state = GPIO.input(BUTTON_PIN)
-        if button_state == GPIO.LOW:
-            print("Button pressed!")
-            capture_image()
-            # Debounce the button press
-            time.sleep(0.5)
+def main():
+    # Initialize the camera
+    camera = cv2.VideoCapture(1)
+    if not camera.isOpened():
+        print("Error: Could not open camera.")
+        exit()
+    if not os.path.exists(SAVE_DIR):
+        print("Save path does not exist!")
+        exit()
+    
+    try:
+        print("Press the button to capture an image...")
+        while True:
+            # Wait for the button press
+            button_state = GPIO.input(BUTTON_PIN)
+            if button_state == GPIO.LOW:
+                print("Button pressed!")
+                capture_image(camera)
+                # Debounce the button press
+                time.sleep(0.5)
+    except KeyboardInterrupt:
+        print("Program terminated by user.")
+    finally:
+        # Release the camera and clean up GPIO
+        camera.release()
+        GPIO.cleanup()
+        print("Cleanup completed.")
 
-except KeyboardInterrupt:
-    print("Program terminated by user.")
-
-finally:
-    # Release the camera and clean up GPIO
-    camera.release()
-    GPIO.cleanup()
-    print("Cleanup completed.")
+if __name__ == "__main__":
+    main()
