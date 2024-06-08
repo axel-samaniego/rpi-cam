@@ -3,7 +3,7 @@ import time
 import os
 
 # Define the GPIO pin
-BUTTON_PIN = 21
+BUTTON_PIN = 5
 
 try:
     # Set up the GPIO pin
