@@ -4,60 +4,83 @@ import cv2
 import RPi.GPIO as GPIO
 from picamera2 import Picamera2
 
-# Define GPIO pin for the button
-BUTTON_PIN = 21
+class PiCam:
+    def __init__(self):
+        # Define GPIO pin for the button
+        self.BUTTON_PIN = 21
+        # Initialize GPIO
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.IMG_NUM_FILE = "img_num.txt"
+        self.img_num = self.read_image_number()
 
-# Initialize GPIO
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        # Define the directory to save images
+        # Get the home directory programmatically
+        self.home_directory = os.path.expanduser('~')
 
-# Define the directory to save images
-# Get the home directory programmatically
-home_directory = os.path.expanduser('~')
+        # Define the directory to save images
+        self.SAVE_DIR = os.path.join(self.home_directory, 'images')
+        if not os.path.exists(self.SAVE_DIR):
+            os.makedirs(self.SAVE_DIR)
 
-# Define the directory to save images
-SAVE_DIR = os.path.join(home_directory, 'rpi_axel', 'images')
-if not os.path.exists(SAVE_DIR):
-    os.makedirs(SAVE_DIR)
+        self.picam = self.create_cam()
 
 
+    def write_image_number(self):
+        with open(self.IMG_NUM_FILE, 'w') as file:
+            file.write(str(self.img_num))
+        print("Num save complete")
 
-def capture_image(picam):
-    # Define the image filename with timestamp
-    img = picam.capture_array()
-    timestamp = time.strftime("%Y%m%d-%H%M%S")
-    image_path = os.path.join(SAVE_DIR, f"image_{timestamp}.jpg")
+    def read_image_number(self):
+        # open the img_num file
+        if os.path.exists(self.IMG_NUM_FILE):
+            with open(self.IMG_NUM_FILE, 'r') as file:
+                img_num = int(file.read().strip())
+        else:
+            img_num = 0
 
-    # Capture and save the image
-    cv2.imwrite(image_path, img)
-    
-    print(f"Image saved to {image_path}")
+        return img_num
 
-def main():
-    # Initialize the camera
-    picam2 = Picamera2()
-    picam2.configure(picam2.create_still_configuration())
-    picam2.preview_configuration.main.size = (800,800)
-    picam2.preview_configuration.main.format = "RGB888"
-    picam2.preview_configuration.align()
-    picam2.configure("preview")
-    picam2.start()
-    try:
-        print("Press the button to capture an image...")
-        while True:
-            # Wait for the button press
-            button_state = GPIO.input(BUTTON_PIN)
-            if button_state == GPIO.LOW:
-                print("Button pressed!")
-                capture_image(picam2)
-                # Debounce the button press
-                time.sleep(0.5)
-    except KeyboardInterrupt:
-        print("Program terminated by user.")
-    finally:
-        # Clean up GPIO
-        GPIO.cleanup()
-        print("Cleanup completed.")
+    def create_cam(self):
+        picam2 = Picamera2()
+        picam2.configure(picam2.create_still_configuration())
+        picam2.preview_configuration.main.size = (800,800)
+        picam2.preview_configuration.main.format = "RGB888"
+        picam2.preview_configuration.align()
+        picam2.configure("preview")
+        picam2.start()
+        return picam2
 
-if __name__ == "__main__":
-    main()
+    def capture_image(self):
+        # Define the image filename with timestamp
+        img = self.picam.capture_array()
+        image_path = os.path.join(self.SAVE_DIR, f"image_{self.img_num:04d}.jpg")
+
+        # Capture and save the image
+        cv2.imwrite(image_path, img)
+        self.img_num+=1
+        print(f"Image saved to {image_path}")
+
+    def run_cam(self):    
+        # Initialize the camera
+        
+        try:
+            print("Press the button to capture an image...")
+            while True:
+                # Wait for the button press
+                button_state = GPIO.input(self.BUTTON_PIN)
+                if button_state == GPIO.LOW:
+                    print("Button pressed!")
+                    self.capture_image()
+                    # Debounce the button press
+                    time.sleep(0.5)
+
+        except KeyboardInterrupt:
+            print("Program terminated by user.")
+        finally:
+            # Clean up GPIO
+            print("Cleaning GPIO and saving img num")
+            GPIO.cleanup()
+            self.write_image_number()
+            print("Cleanup completed.")
+
