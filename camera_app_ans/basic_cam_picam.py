@@ -12,7 +12,11 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # Define the directory to save images
-SAVE_DIR = os.path.expanduser('~/rpi_axel/images')
+# Get the home directory programmatically
+home_directory = os.path.expanduser('~')
+
+# Define the directory to save images
+SAVE_DIR = os.path.join(home_directory, 'rpi_axel', 'images')
 if not os.path.exists(SAVE_DIR):
     os.makedirs(SAVE_DIR)
 
