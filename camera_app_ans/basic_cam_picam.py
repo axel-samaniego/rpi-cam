@@ -2,15 +2,18 @@ import time
 import os
 import cv2
 import RPi.GPIO as GPIO
+import sys
 from picamera2 import Picamera2
 
 class PiCam:
     def __init__(self):
         # Define GPIO pin for the button
-        self.BUTTON_PIN = 21
+        self.CAP_BUTTON_PIN = 21
+        self.QUIT_BUTTON_PIN = 6
         # Initialize GPIO
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.CAP_BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.QUIT_BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         self.IMG_NUM_FILE = "img_num.txt"
         self.img_num = self.read_image_number()
 
@@ -60,6 +63,13 @@ class PiCam:
         cv2.imwrite(image_path, img)
         self.img_num+=1
         print(f"Image saved to {image_path}")
+    
+    def terminate_cam(self):
+        print("Cleaning GPIO and saving img num")
+        GPIO.cleanup()
+        self.write_image_number()
+        print("Cleanup completed.")
+        sys.exit()
 
     def run_cam(self):    
         # Initialize the camera
@@ -68,19 +78,21 @@ class PiCam:
             print("Press the button to capture an image...")
             while True:
                 # Wait for the button press
-                button_state = GPIO.input(self.BUTTON_PIN)
-                if button_state == GPIO.LOW:
+                cap_button_state = GPIO.input(self.CAP_BUTTON_PIN)
+                quit_button_state = GPIO.input(self.QUIT_BUTTON_PIN)
+                if cap_button_state == GPIO.LOW:
                     print("Button pressed!")
                     self.capture_image()
                     # Debounce the button press
                     time.sleep(0.5)
+                if quit_button_state == GPIO.LOW:
+                    print("Button pressed to terminate program")
+                    self.terminate_cam()
 
         except KeyboardInterrupt:
             print("Program terminated by user.")
         finally:
             # Clean up GPIO
-            print("Cleaning GPIO and saving img num")
-            GPIO.cleanup()
-            self.write_image_number()
-            print("Cleanup completed.")
+            self.terminate_cam
+       
 
