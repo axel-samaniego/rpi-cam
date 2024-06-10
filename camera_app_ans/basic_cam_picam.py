@@ -68,7 +68,8 @@ class PiCam:
     def display_image(self, img):
         cv2.namedWindow('Captured Image', cv2.WND_PROP_FULLSCREEN)
         cv2.setWindowProperty('Captured Image', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-        cv2.imshow('Captured Image', img)
+        img_color_fixed = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        cv2.imshow('Captured Image', img_color_fixed)
         cv2.waitKey(3000)  # Display the image for 3000 ms (3 seconds)
         cv2.destroyAllWindows()
 
