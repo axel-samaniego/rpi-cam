@@ -58,11 +58,20 @@ class PiCam:
         # Define the image filename with timestamp
         img = self.picam.capture_array()
         image_path = os.path.join(self.SAVE_DIR, f"image_{self.img_num:04d}.jpg")
+        self.display_image(img)
 
         # Capture and save the image
         cv2.imwrite(image_path, img)
         self.img_num+=1
         print(f"Image saved to {image_path}")
+    
+    def display_image(self, img):
+        cv2.namedWindow('Captured Image', cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty('Captured Image', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        cv2.imshow('Captured Image', img)
+        cv2.waitKey(3000)  # Display the image for 3000 ms (3 seconds)
+        cv2.destroyAllWindows()
+
     
     def terminate_cam(self):
         print("Cleaning GPIO and saving img num")
