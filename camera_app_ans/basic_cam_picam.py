@@ -1,6 +1,7 @@
 import time
 import os
 import cv2
+import matplotlib
 import RPi.GPIO as GPIO
 import sys
 from picamera2 import Picamera2
@@ -58,7 +59,7 @@ class PiCam:
         # Define the image filename with timestamp
         img = self.picam.capture_array()
         image_path = os.path.join(self.SAVE_DIR, f"image_{self.img_num:04d}.jpg")
-        self.display_image(img)
+        # self.display_image(img)
 
         # Capture and save the image
         cv2.imwrite(image_path, img)
