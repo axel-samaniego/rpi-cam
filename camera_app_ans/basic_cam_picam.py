@@ -14,14 +14,14 @@ class PiCam:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.CAP_BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.QUIT_BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        self.IMG_NUM_FILE = "rpi_axel/projects/rpi-cam/img_num.txt"
+        self.IMG_NUM_FILE = "/home/rpi_axel/rpi_axel/projects/rpi-cam/img_num.txt"
         self.img_num = self.read_image_number()
 
         # Define the directory to save images
         # Get the home directory programmatically
 
         # Define the directory to save images
-        self.SAVE_DIR = 'rpi_axel/images'
+        self.SAVE_DIR = '/home/rpi_axel/rpi_axel/images'
         if not os.path.exists(self.SAVE_DIR):
             os.makedirs(self.SAVE_DIR)
 
