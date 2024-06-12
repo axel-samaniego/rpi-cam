@@ -63,6 +63,7 @@ class PiCam:
         cv2.imwrite(image_path, img)
         self.img_num+=1
         print(f"Image saved to {image_path}")
+        self.write_image_number()
     
     def display_image(self, img):
         cv2.namedWindow('Captured Image', cv2.WND_PROP_FULLSCREEN)
