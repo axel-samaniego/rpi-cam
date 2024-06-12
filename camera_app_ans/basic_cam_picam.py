@@ -75,9 +75,9 @@ class PiCam:
 
     
     def terminate_cam(self):
-        print("Cleaning GPIO and saving img num")
+        print("Cleaning GPIO and closing camera")
         GPIO.cleanup()
-        self.write_image_number()
+        self.picam.close()
         print("Cleanup completed.")
         sys.exit()
 
