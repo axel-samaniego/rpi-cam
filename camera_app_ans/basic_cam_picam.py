@@ -19,10 +19,9 @@ class PiCam:
 
         # Define the directory to save images
         # Get the home directory programmatically
-        self.home_directory = os.path.expanduser('~')
 
         # Define the directory to save images
-        self.SAVE_DIR = os.path.join(self.home_directory, 'images')
+        self.SAVE_DIR = 'rpi_axel/images'
         if not os.path.exists(self.SAVE_DIR):
             os.makedirs(self.SAVE_DIR)
 
