@@ -1,7 +1,6 @@
 import time
 import os
 import cv2
-import matplotlib
 import RPi.GPIO as GPIO
 import sys
 from picamera2 import Picamera2
