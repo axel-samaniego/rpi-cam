@@ -12,7 +12,7 @@ while true; do
     if [ "$(gpio -g read $GPIO)" = "0" ]; then
         echo "Button pressed!"
         # Replace '/path/to/your_program' with the actual path to your program
-        /path/to/your_program &
+        python basic_cam_picam.py/ &
         sleep 0.5  # Debounce time
         while [ "$(gpio -g read $GPIO)" = "0" ]; do
             sleep 0.1  # Wait for button release
