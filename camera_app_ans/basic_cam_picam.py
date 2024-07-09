@@ -81,7 +81,7 @@ class PiCam:
         print("Cleaning GPIO and closing camera")
         GPIO.cleanup()
         self.picam.close()
-        subprocess.Popen(['./button_script.sh'])
+        subprocess.Popen(['python start_on_button.py'])
         print("Cleanup completed.")
         sys.exit()
 
