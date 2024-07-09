@@ -83,6 +83,7 @@ class PiCam:
         self.picam.close()
         subprocess.Popen(['python', '/home/rpi_axel/rpi_axel/projects/rpi-cam/camera_app_ans/start_on_button.py'])
         print("Cleanup completed.")
+        time.sleep(0.1)
         sys.exit()
 
     def run_cam(self):    

@@ -21,10 +21,10 @@ try:
             
             time.sleep(0.5)  # Debounce time
             while GPIO.input(GPIO_PIN) == GPIO.LOW:
-                time.sleep(0.1)  # Wait for button release
+                time.sleep(0.01)  # Wait for button release
             break  # Exit the loop and terminate the script
 
-        time.sleep(0.1)  # Polling interval
+        time.sleep(0.01)  # Polling interval
 
 finally:
     GPIO.cleanup()  # Clean up GPIO on exit
