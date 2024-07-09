@@ -4,6 +4,7 @@ import cv2
 import RPi.GPIO as GPIO
 import sys
 from picamera2 import Picamera2
+import subprocess
 
 class PiCam:
     def __init__(self):
@@ -16,6 +17,7 @@ class PiCam:
         GPIO.setup(self.QUIT_BUTTON_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         self.IMG_NUM_FILE = "/home/rpi_axel/rpi_axel/projects/rpi-cam/img_num.txt"
         self.img_num = self.read_image_number()
+        
 
         # Define the directory to save images
         # Get the home directory programmatically
@@ -44,6 +46,7 @@ class PiCam:
         return img_num
 
     def create_cam(self):
+        
         picam2 = Picamera2()
         picam2.configure(picam2.create_still_configuration())
         picam2.preview_configuration.main.size = (800,800)
@@ -78,6 +81,7 @@ class PiCam:
         print("Cleaning GPIO and closing camera")
         GPIO.cleanup()
         self.picam.close()
+        subprocess.Popen(['./button_script.sh'])
         print("Cleanup completed.")
         sys.exit()
 
