@@ -81,7 +81,7 @@ class PiCam:
         print("Cleaning GPIO and closing camera")
         GPIO.cleanup()
         self.picam.close()
-        subprocess.Popen(['/home/rpi_axel/.pyenv/shims/python', 'start_on_button.py'])
+        subprocess.Popen(['python', '/home/rpi_axel/rpi_axel/projects/rpi-cam/camera_app_ans/start_on_button.py'])
         print("Cleanup completed.")
         sys.exit()
 
