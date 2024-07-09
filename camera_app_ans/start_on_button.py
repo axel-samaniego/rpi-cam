@@ -18,7 +18,7 @@ try:
             print("Button pressed!")
             print("Running Program!")
             # Replace '/path/to/your_program' with the actual path to your program
-            subprocess.Popen(['python run_picam.py'])
+            subprocess.Popen(['python', 'run_picam.py'])
             time.sleep(0.5)  # Debounce time
             while GPIO.input(GPIO_PIN) == GPIO.LOW:
                 time.sleep(0.1)  # Wait for button release
