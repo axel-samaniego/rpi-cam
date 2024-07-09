@@ -18,14 +18,14 @@ try:
             print("Button pressed!")
             print("Running Program!")
             # Replace '/path/to/your_program' with the actual path to your program
-            subprocess.Popen(['python', '/home/rpi_axel/rpi_axel/projects/rpi-cam/camera_app_ans/run_picam.py'])
+            
             time.sleep(0.5)  # Debounce time
             while GPIO.input(GPIO_PIN) == GPIO.LOW:
                 time.sleep(0.1)  # Wait for button release
-            print("Button released!")
             break  # Exit the loop and terminate the script
 
         time.sleep(0.1)  # Polling interval
 
 finally:
     GPIO.cleanup()  # Clean up GPIO on exit
+    subprocess.Popen(['python', '/home/rpi_axel/rpi_axel/projects/rpi-cam/camera_app_ans/run_picam.py'])
