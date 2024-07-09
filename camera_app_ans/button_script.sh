@@ -3,21 +3,19 @@
 # GPIO pin number
 GPIO=6
 
-# Set GPIO pin as input
-gpio -g mode $GPIO in
-
 # Loop indefinitely
 while true; do
-    # Wait for button press (LOW state)
-    if [ "$(gpio -g read $GPIO)" = "0" ]; then
+    # Check if button is pressed
+    if [ "$(gpio read $GPIO)" = "0" ]; then
         echo "Button pressed!"
+        echo "Starting Program!"
         # Replace '/path/to/your_program' with the actual path to your program
-        python basic_cam_picam.py/ &
+        python run_picam.py &
         sleep 0.5  # Debounce time
-        while [ "$(gpio -g read $GPIO)" = "0" ]; do
+        while [ "$(gpio read $GPIO)" = "0" ]; do
             sleep 0.1  # Wait for button release
         done
-        echo "PiCam Starting!"
+        echo "Button released!"
         break  # Exit the loop and terminate the script
     fi
     sleep 0.1  # Polling interval
