@@ -108,6 +108,6 @@ class PiCam:
             print("Program terminated by user.")
         finally:
             # Clean up GPIO
-            self.terminate_cam
+            self.terminate_cam()
        
 
